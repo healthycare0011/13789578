@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    main {
+      margin: 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .item-details {
+      display: flex;
+      align-items: center;
+    }
+
+    .item-info {
+      margin-left: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 5px 10px;
+      margin-left: 10px;
+    }
+
+    footer {
+      position: flex;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    #total {
+      text-align: right;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #buy-now-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #buy-now {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    #buy-now:hover {
+      background-color: #45a049;
+    }
+
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cart</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Cart</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2 id="cartTitle">Your Cart</h2>
+    <div id="cartItems">
+      <!-- Cart items will be dynamically generated here -->
+    </div>
+    <div id="shippingFee"></div>
+    <div id="total"></div>
+    <div id="buy-now-container" style="text-align: center;">
+      <button id="buy-now" onclick="buyNow()">Buy Now</button>
+    </div>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modalText">Please add some items to buy.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 E-commerce Website. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Retrieve cart items from local storage
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Display cart items
+    const cartItemsContainer = document.getElementById('cartItems');
+    const cartTitle = document.getElementById('cartTitle');
+    const totalElement = document.getElementById('total');
+    const buyNowContainer = document.getElementById('buy-now-container');
+
+    let totalAmount = 0;
+
+    // Initial total calculation
+    if (cartItems.length > 0) {
+      calculateTotal();
+    } else {
+      cartTitle.textContent = "Your Cart is Empty";
+    }
+
+    cartItems.forEach((item, index) => {
+      const cartItem = document.createElement('div');
+      cartItem.classList.add('cart-item');
+      cartItem.innerHTML = `
+        <div class="item-details">
+          <img src="${item.image}" alt="${item.name}" style="width: 100px; height: auto;">
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>Price: ৳${item.price}</p>
+          </div>
+          <button class="delete-button" onclick="deleteItem(${index})">Delete</button>
+        </div>
+      `;
+      cartItemsContainer.appendChild(cartItem);
+      totalAmount += parseFloat(item.price);
+    });
+
+    // Function to delete item from cart
+    function deleteItem(index) {
+      const cartItem = document.querySelectorAll('.cart-item')[index];
+      const animation = cartItem.animate([
+        { transform: 'scale(1)', opacity: 1 },
+        { transform: 'scale(0)', opacity: 0 }
+      ], {
+        duration: 500,
+        easing: 'ease'
+      });
+
+      animation.onfinish = () => {
+        cartItems.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+        location.reload(); // Refresh the page to reflect changes
+      };
+    }
+
+    // Function to calculate total
+    function calculateTotal() {
+      totalAmount = 0;
+      cartItems.forEach((item) => {
+        totalAmount += parseFloat(item.price);
+      });
+
+      // Add delivery fee only if cart is not empty
+      if (cartItems.length > 0) {
+        const deliveryFee = 150; // Example delivery fee
+        totalAmount += deliveryFee;
+      }
+
+      totalElement.textContent = `Delivery Charge  ৳150 ______Total: ৳${totalAmount.toFixed(2)}`;
+
+      // Show or hide the Buy Now container based on cart items
+      buyNowContainer.style.display = cartItems.length > 0 ? 'block' : 'none';
+    }
+
+    // Function to handle buy now button click
+    function buyNow() {
+      if (cartItems.length === 0) {
+        showModal("Please add some items to buy.");
+      } else {
+        window.location.href = `order.html?total=${totalAmount.toFixed(2)}`;
+      }
+    }
+
+    // Function to show modal with custom message
+    function showModal(message) {
+      const modal = document.getElementById('myModal');
+      const modalText = document.getElementById('modalText');
+      modalText.textContent = message;
+      modal.style.display = "block";
+    }
+
+    // Function to close modal
+    function closeModal() {
+      const modal = document.getElementById('myModal');
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+</html>

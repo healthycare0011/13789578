@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* অপটিমাইজড CSS স্টাইলিং */
+
+    header {
+      background-color: mediumPurple;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  padding-bottom: 40px; /* Adjust this value as needed */
+}
+
+
+    .product {
+      width: 150px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      position: fixd;
+      background-color: dimGray;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      width: 100%;
+      
+    }
+
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #cartCounter {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      margin-left: 5px;
+      vertical-align: middle; 
+      display: none; 
+    }
+
+    #search {
+            text-align: center;
+            margin: 20px;
+        }
+
+        #search input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px; /* Adjust the border-radius for a more rounded shape */
+        }
+
+        #search button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 20px; /* Adjust the border-radius to match the input */
+            cursor: pointer;
+        }
+
+    .product button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .product button:hover {
+      background-color: #45a049;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>E-commerce Website</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">My Cart <span id="cartCounter"></span></a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+   
+    <div id="search">
+        <input type="text" id="searchInput" placeholder="Search by product name">
+        <button onclick="searchProduct()">Search</button>
+    </div>
+  </div>
+
+    <div id="search-result">
+        <!-- Display search result here -->
+    </div>
+<main>
+   <div class="product product-box">
+   <img src="https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg" alt="Product 1">
+      <h2>Product 1</h2>
+      <p>Price: ৳10.00</p>
+      <button onclick="addToCart('Product 1', 10.00, 'https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg')">Add to Cart</button>
+    </div>
+  
+   <div class="product product-box">
+      <img src="https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg" alt="Product 2">
+      <h2>Product 2</h2>
+      <p>Price: ৳20.00</p>
+      <button onclick="addToCart('Product 2', 20.00, 'https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg')">Add to Cart</button>
+    </div>
+  
+    <div class="product product-box">
+      <img src="https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg" alt="Product 3">
+      <div class="product-name"><h2>Protien Plus</h2> </div>
+            <div class="product-price"><h2>৳ 850</h2></div>
+            <button onclick="addToCart('Protien Plus', 850.00, 'https://raw.githubusercontent.com/healthycare0011/photo/main/Height develop powder.jpg')">Add to Cart</button>
+    </div>
+  
+  
+  
+  
+    
+    <div id="successModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p>Item added to cart successfully.</p>
+      </div>
+    </div>
+
+    <div id="errorModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p>This item is already added to the cart.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 E-commerce Website. All rights reserved.</p>
+  </footer>
+  
+  <script>
+    var successModal = document.getElementById("successModal");
+    var errorModal = document.getElementById("errorModal");
+
+    var closeSuccessModal = successModal.getElementsByClassName("close")[0];
+    var closeErrorModal = errorModal.getElementsByClassName("close")[0];
+
+    closeSuccessModal.onclick = function() {
+      successModal.style.display = "none";
+    }
+
+    closeErrorModal.onclick = function() {
+      errorModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == successModal) {
+        successModal.style.display = "none";
+      }
+      if (event.target == errorModal) {
+        errorModal.style.display = "none";
+      }
+    }
+
+    function addToCart(productName, price, imageUrl) {
+      const cartItem = { name: productName, price: price, image: imageUrl };
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      const isAlreadyInCart = cart.some(item => item.name === productName);
+
+      if (isAlreadyInCart) {
+        errorModal.style.display = "block";
+      } else {
+        cart.push(cartItem);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        successModal.style.display = "block";
+        updateCartCounter();
+        autoClosePopup();
+      }
+    }
+
+    function updateCartCounter() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartCounter = document.getElementById('cartCounter');
+      if (cartCounter) {
+        if (cart.length > 0) {
+          cartCounter.style.display = 'inline-block';
+          cartCounter.textContent = cart.length;
+        } else {
+          cartCounter.style.display = 'none';
+        }
+      }
+    }
+
+    
+    function closePopup() {
+      successModal.style.display = "none";
+      errorModal.style.display = "none";
+    }
+
+    function autoClosePopup() {
+      setTimeout(closePopup, 1000);
+    }
+
+    updateCartCounter();
+  </script>
+<script>
+      function searchProduct() {
+    var searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+    var productBoxes = document.querySelectorAll('.product');
+
+    if (searchTerm === "") {
+        document.getElementById('search-result').innerHTML = '<p>Please enter a search term.</p>';
+        document.getElementById('search-result').style.display = 'block';
+        return;
+    }
+
+    var matchedProducts = Array.from(productBoxes).filter(function(productBox) {
+        var productName = productBox.querySelector('h2').innerText.toLowerCase();
+        return productName.includes(searchTerm);
+    });
+
+    var uniqueProducts = [];
+    matchedProducts.forEach(function(productBox) {
+        var productName = productBox.querySelector('h2').innerText.toLowerCase();
+        if (!uniqueProducts.includes(productName)) {
+            uniqueProducts.push(productName);
+        }
+    });
+
+    if (uniqueProducts.length > 0) {
+        var resultHTML = "";
+        uniqueProducts.forEach(function(productName) {
+            var matchedProduct = matchedProducts.find(function(productBox) {
+                return productBox.querySelector('h2').innerText.toLowerCase() === productName;
+            });
+            resultHTML += matchedProduct.outerHTML;
+        });
+        document.getElementById('search-result').innerHTML = resultHTML;
+        document.getElementById('search-result').style.display = 'block';
+    } else {
+        document.getElementById('search-result').innerHTML = '<p>No matching products found.</p>';
+        document.getElementById('search-result').style.display = 'block';
+    }
+}
+
+
+        </script>
+</body>
+</html>
